@@ -1,48 +1,47 @@
-import React, { useState, useEffect } from 'react';
-import { pipeline } from '@huggingface/transformers';
+import React, { useState } from 'react';
+import { translateText } from '../utils/translationService';
+//import { pipeline } from '@huggingface/transformers';
 
 // Update the type definition
 
 interface LanguageSelectProps {
     onLanguageChange: (language: string) => void;
     text: string;
-    setText: React.Dispatch<React.SetStateAction<string>>;
+    setTranslatedText: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const LanguageSelect: React.FC<LanguageSelectProps> = ({ onLanguageChange, text, setText }) => {
-    const [model, setModel] = useState<any>(null);
-    const [tokenizer, setTokenizer] = useState<any>(null);
+const LanguageSelect: React.FC<LanguageSelectProps> = ({ onLanguageChange, text, setTranslatedText }) => {
+    const [loading, setLoading] = useState(false); // Add loading state
+    const [selectedLanguage, setSelectedLanguage] = useState(''); // Track selected language
 
-    useEffect(() => {
-        const loadModel = async () => {
-            const translator: q8 = await pipeline('translation', 'Xenova/m2m100_418M');
-            const output: string = await translator('生活就像一盒巧克力。', {
-                src_lang: 'zh', // Chinese
-                tgt_lang: 'en', // English
-            });
-            setText(output);
-            console.log(output);
-            // const loadedTokenizer = await AutoTokenizer.from_pretrained('Helsinki-NLP/opus-mt-en-ROMANCE');
-            // const loadedModel = await AutoModelForSeq2SeqLM.from_pretrained('Helsinki-NLP/opus-mt-en-ROMANCE');
-            // setTokenizer(loadedTokenizer);
-            // setModel(loadedModel);
-        };
-        loadModel();
+    const handleLanguageChange = async (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const language = event.target.value;
+        setSelectedLanguage(language); // Update selected language
+        setLoading(true);
 
-
-    }, []);
-
-    const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedLanguage = event.target.value;
-        console.log(text)
-        console.log(selectedLanguage)
-        //        onLanguageChange(selectedLanguage);
+        try {
+            const translatedText = await translateText(text, 'en', language);
+            setTranslatedText(translatedText);
+            console.log(translatedText);
+        } catch (error) {
+            console.error('Translation error:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
         <div className="flex flex-col items-start w-full">
+            <div
+                className={`w-full h-10 flex items-center justify-center border border-gray-300 rounded-md ${loading ? 'visible' : 'invisible'
+                    }`}
+            >
+                <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500 border-t-transparent"></div>
+            </div>
+
             <select
                 id="language-select"
+                value={selectedLanguage} // Set the value to the selected language
                 onChange={handleLanguageChange}
                 className="px-3 py-2 mb-8 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full"
             >
@@ -52,6 +51,13 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ onLanguageChange, text,
                 <option value="it">Italian</option>
                 <option value="pt">Portuguese</option>
                 <option value="ro">Romanian</option>
+                <option value="ru">Russian</option>
+                <option value="zh">Chinese</option>
+                <option value="ja">Japanese</option>
+                <option value="ar">Arabic</option>
+                <option value="de">German</option>
+                <option value="nl">Dutch</option>
+                <option value="ko">Korean</option>
             </select>
         </div>
     );

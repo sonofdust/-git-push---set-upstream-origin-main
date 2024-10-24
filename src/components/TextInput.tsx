@@ -8,6 +8,8 @@ interface TextInputProps {
 const TextInput: React.FC<TextInputProps> = ({ initialText, setInitialText }) => {
   return (
     <div className="w-64 h-96 overflow-auto">
+
+
       <textarea
         value={initialText}
         onChange={(e) => setInitialText(e.target.value)}
