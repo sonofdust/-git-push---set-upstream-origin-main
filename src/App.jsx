@@ -6,7 +6,7 @@ function App() {
   const [text, setText] = useState('Hello World')
   return (
     <>
-      {/* <h1>Hello World</h1> */}
+      <h1>Hello World</h1>
       <LanguageSelect text={text} setText={setText} />
       <TextInput initialText={text} setInitialText={setText} />
     </>
