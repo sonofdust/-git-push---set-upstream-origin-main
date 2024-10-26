@@ -3,14 +3,16 @@ import React from 'react';
 interface TextInputProps {
   initialText: string;
   setInitialText: React.Dispatch<React.SetStateAction<string>>;
+  isLoading: boolean
 }
 
-const TextInput: React.FC<TextInputProps> = ({ initialText, setInitialText }) => {
+const TextInput: React.FC<TextInputProps> = ({ initialText, setInitialText, isLoading }) => {
   return (
     <div className="w-64 h-96 overflow-auto">
 
 
       <textarea
+        disabled={isLoading}
         value={initialText}
         onChange={(e) => setInitialText(e.target.value)}
         className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 w-full h-full resize-none"
