@@ -26,7 +26,7 @@ const languageOptions = {
 const LanguageSelect: React.FC<LanguageSelectProps> = ({ selectedLanguage, setSelectedLanguage }) => {
 
     const handleLanguageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        //        event.preventDefault();
+        event.preventDefault();
         const language = event.target.value;
         if (language in languageOptions) {
             setSelectedLanguage({ key: language, name: languageOptions[language] });
@@ -42,7 +42,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({ selectedLanguage, setSe
                     <select
                         className="w-full bg-transparent mb-3 placeholder:text-slate-400 text-slate-700 text-sm border border-slate-200 rounded pl-3 pr-8 py-2 transition duration-300 ease focus:outline-none focus:border-slate-400 hover:border-slate-400 shadow-sm focus:shadow-md appearance-none cursor-pointer"
                         onChange={handleLanguageChange}>
-                        <option selected>Choose a language</option>
+                        {selectedLanguage.key === '' && <option>Choose a language</option>}
                         {Object.entries(languageOptions).map(([code, name]) => (
                             <option key={code} value={code}>{name}</option>
                         ))}
